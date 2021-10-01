@@ -18,5 +18,11 @@
       "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png",
       "id": 3
     },
+    {
+      "title": "Tijeras",
+      "price": 21.34,
+      "thumbnail": "https://cdn0.iconfinder.com/data/icons/graphic-design-tools-5/128/_scissor-256.png",
+      "id": 4
+    }
   ]
 }

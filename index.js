@@ -1,15 +1,14 @@
 const express = require('express');
-let Container = require('./Container.js');
 const productsRoute = require('./routes/products');
 
 const app = express();
 const PORT = 8080;
-let count = 0;
 
 app.use(express.json());
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    res.status(200).send('Servidor OK');
+    res.status(200).sendFile('index.html');
 });
 
 app.use('/api/productos', productsRoute);

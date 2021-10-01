@@ -1,8 +1,6 @@
 const express = require('express');
-const { json } = require('express/lib/response');
-const app = express();
 const productAPI = express.Router();
-let Container = require('./../Container');
+const container = require('./../Container');
 
 productAPI.get('/', (req, res) => {
     fetchAllProducts()
@@ -24,7 +22,6 @@ productAPI.get('/random', (req, res) => {
 
 productAPI.get('/:id', (req, res) => {
     const { id } = req.params;
-    console.log('id capturado: ' + id);
     fetchProductById(id)
         .then(result => {
             result === null
@@ -41,22 +38,49 @@ productAPI.get('/:id', (req, res) => {
 
 productAPI.post('/', (req, res) => {
     const newProduct = req.body;
-    console.log('producto nuevo: ' + JSON.stringify(newProduct))
     writeNewProduct(newProduct)
-        .then(res.json({
-            message: 'Producto guardado',
+        .then(id => {
+            fetchProductById(id)
+                .then(pro => res.json({
+                    message: 'Producto guardado',
+                    data: pro
+                }))
+        })
+        .catch(e => console.error(e));
+});
+
+productAPI.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const newProduct = req.body;
+    updateProduct(id, newProduct)
+        .then(id => {
+            fetchProductById(id)
+                .then(pro => res.json({
+                    message: 'Producto actualizado',
+                    data: pro
+                }))
+        })
+        .catch(e => console.error(e));
+});
+
+productAPI.delete('/:id', (req, res) => {
+    const { id } = req.params;
+        deleteProduct(id)
+        .then(all => res.json({
+            message: 'Producto eliminado',
+            data: all
         }))
         .catch(e => console.error(e));
 });
 
 const fetchAllProducts = async() => {
-    const container = await Container.initialize('productos.txt');
-    return container.getAll();
+    const productContainer = await container.initialize('productos.txt');
+    return productContainer.getAll();
 };
 
-const fetchProductById  = async(id) => {
-    const container = await Container.initialize('productos.txt');
-    const obj = container.getById(Number(id));
+const fetchProductById = async(id) => {
+    const productContainer = await container.initialize('productos.txt');
+    const obj = productContainer.getById(Number(id));
     return obj;
 };
 
@@ -66,9 +90,21 @@ const fetchRandomProduct = async() => {
 };
 
 const writeNewProduct = async(newProduct) => {
-    const container = await Container.initialize('productos.txt');
-    const product = await container.save(newProduct);
+    const productContainer = await container.initialize('productos.txt');
+    const product = await productContainer.save(newProduct);
     return product;
+};
+
+const updateProduct = async(id, newProduct) => {
+    const productContainer = await container.initialize('productos.txt');
+    const product = await productContainer.updateById(Number(id), newProduct);
+    return product;
+};
+
+const deleteProduct = async(id) => {
+    const productContainer = await container.initialize('productos.txt');
+    await productContainer.deleteById(Number(id));
+    return await fetchAllProducts();
 };
 
 module.exports = productAPI;

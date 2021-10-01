@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles.css">
+    <title>CRUD Productos</title>
+</head>
+<body>
+    <div class="container-md">
+        <h1>CRUD Productos</h1>
+        <h3>Agregue su producto:</h3>
+        <form>
+            <div class="mb-3">
+                <label for="inputTitle" class="form-label">Title:</label>
+                <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
+            </div>
+            <div class="mb-3">
+                <label for="inputPrice" class="form-label">Price:</label>
+                <input type="text" class="form-control" id="inputPrice">
+            </div>
+            <div class="mb-3">
+                <label for="inputThumbnail" class="form-label">Thumbnail:</label>
+                <input type="text" class="form-control" id="inputThumbnail">
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" id="submitButton" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <script>
+        const URL = 'http://localhost:8080/api/productos/';
+        const button = document.getElementById('submitButton');
+        const title = document.getElementById('inputTitle').value;
+        const price = document.getElementById('inputPrice').value;
+        const thumbnail = document.getElementById('inputThumbnail').value;
+        button.addEventListener('click', async => {
+            try {     
+                const response = await fetch(URL, {
+                    method: 'post',
+                    body: {
+                        "title": title,
+                        "price": Number(price),
+                        "thumbnail": thumbnail
+                    }
+                });
+                console.log('Completed!', response);
+            } catch(err) {
+                console.error(`Error: ${err}`);
+            }
+        });
+    </script>
+</body>
+</html>

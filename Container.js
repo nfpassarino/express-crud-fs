@@ -13,8 +13,8 @@ module.exports = class Container {
     static async initialize(fileName = '') {
         const filePath = path.resolve(fileName);
         if (fs.existsSync(filePath)) {
-            const data = JSON.parse(await fsPromises.readFile(filePath, 'utf-8'));
-            const objects = data.objects;
+            const data = await fsPromises.readFile(filePath, 'utf-8');
+            const objects = JSON.parse(data).objects;
             const lastId = objects.slice(-1)[0]?.id || 0;
             return new Container(filePath, objects, lastId);
         } else {
@@ -33,18 +33,23 @@ module.exports = class Container {
         return null;
     }
 
+    async updateById(id, newObject) {
+        if(typeof id === 'number' && this.objects.length > 0 && id <= this.objects.length) {
+            this.objects[id - 1] = {
+                ...newObject,
+                "id": id
+            };
+            await fsPromises.writeFile(this.filePath, JSON.stringify({ objects: this.objects }, null, 2));
+            return id;
+        }
+        return null;
+    }
+
     getById(id) {
         if(typeof id === 'number' && this.objects.length > 0 && id >0 && id <= this.objects.length) {
             return this.objects[id - 1];
         } else {
             return null;
-        }
-    }
-
-    async updateById(id, newObject) {
-        if(typeof id === 'number' && this.objects.length > 0 && id < this.objects.length) {
-            this.objects[id - 1] = newObject;
-            await fsPromises.writeFile(this.filePath, JSON.stringify({ objects: this.objects }, null, 2));
         }
     }
 
@@ -54,7 +59,7 @@ module.exports = class Container {
 
     async deleteById(n) {
         if(typeof n === 'number') {
-            if(n < this.objects.length) {
+            if(n <= this.objects.length) {
                 let newArray = this.objects.filter(obj => obj !== this.objects[n - 1]);
                 await fsPromises.writeFile(this.filePath, JSON.stringify({ objects: newArray }, null, 2));
             }
