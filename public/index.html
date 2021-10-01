@@ -12,7 +12,7 @@
     <div class="container-md">
         <h1>CRUD Productos</h1>
         <h3>Agregue su producto:</h3>
-        <form>
+        <form id="formElement">
             <div class="mb-3">
                 <label for="inputTitle" class="form-label">Title:</label>
                 <input type="text" class="form-control" id="inputTitle" aria-describedby="titleHelp">
@@ -30,28 +30,33 @@
             </div>
         </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
     <script>
-        const URL = 'http://localhost:8080/api/productos/';
-        const button = document.getElementById('submitButton');
-        const title = document.getElementById('inputTitle').value;
-        const price = document.getElementById('inputPrice').value;
-        const thumbnail = document.getElementById('inputThumbnail').value;
-        button.addEventListener('click', async => {
-            try {     
-                const response = await fetch(URL, {
-                    method: 'post',
-                    body: {
-                        "title": title,
-                        "price": Number(price),
-                        "thumbnail": thumbnail
-                    }
-                });
-                console.log('Completed!', response);
-            } catch(err) {
-                console.error(`Error: ${err}`);
-            }
-        });
+        formElement.onsubmit = async(e) => {
+            e.preventDefault();
+            const URL = '/api/productos/';
+            let title = document.getElementById("inputTitle").value;
+            let price = document.getElementById("inputPrice").value;
+            let thumbnail = document.getElementById("inputThumbnail").value;
+            const response = await fetch(URL, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "title": title,
+                    "price": Number(price),
+                    "thumbnail": thumbnail
+                })
+            });
+            const result = await response.json();
+            alert(JSON.stringify({
+                    "title": title,
+                    "price": Number(price),
+                    "thumbnail": thumbnail
+                }));
+        };
+
     </script>
 </body>
 </html>
