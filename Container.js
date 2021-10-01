@@ -33,11 +33,18 @@ module.exports = class Container {
         return null;
     }
 
-    getById(n) {
-        if(typeof n === 'number') {
-            return (this.objects.length > 0 && n < this.objects.length) ?
-                this.objects[n - 1]
-                : null;
+    getById(id) {
+        if(typeof id === 'number' && this.objects.length > 0 && id >0 && id <= this.objects.length) {
+            return this.objects[id - 1];
+        } else {
+            return null;
+        }
+    }
+
+    async updateById(id, newObject) {
+        if(typeof id === 'number' && this.objects.length > 0 && id < this.objects.length) {
+            this.objects[id - 1] = newObject;
+            await fsPromises.writeFile(this.filePath, JSON.stringify({ objects: this.objects }, null, 2));
         }
     }
 

@@ -1,41 +1,24 @@
 const express = require('express');
 let Container = require('./Container.js');
+const productsRoute = require('./routes/products');
 
 const app = express();
 const PORT = 8080;
 let count = 0;
 
+app.use(express.json());
 
-const server = app.listen(PORT, () => {
-    console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
-});
-server.on("error", error => console.log(`Error en servidor ${error}`));
-
-app.get('/productos', (req, res) => {
-    fetchAllProducts()
-        .then(all => res.json({
-            message: 'Array con todos los productos',
-            data: all
-        }))
-        .catch(e => console.error(e));
+app.get('/', (req, res) => {
+    res.status(200).send('Servidor OK');
 });
 
-app.get('/productorandom', (req, res) => {
-    fetchRandomProduct()
-        .then(random => res.json({
-            message: 'Producto aleatorio',
-            data: random
-        }))
-        .catch(e => console.error(e));
+app.use('/api/productos', productsRoute);
+
+app.listen(PORT, () => {
+    console.log(`Servidor http escuchando en el puerto ${PORT}`);
 });
 
-const fetchAllProducts = async() => {
-    const container = await Container.initialize('productos.txt');
-    return container.getAll();
-}
-
-const fetchRandomProduct = async() => {
-    const objects = await fetchAllProducts();
-    const object = objects[Math.floor(Math.random() * objects.length)];
-    return object;
-}
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Algo salio mal :(');
+});

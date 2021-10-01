@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon --watch index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nfpassarino/express-challenge.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nicolas Passarino <nfpassarino@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/nfpassarino/express-challenge/issues"
