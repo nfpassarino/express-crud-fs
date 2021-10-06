@@ -4,3 +4,12 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.firstContainer {
+    background-color: #eeeeee;
+    border-radius: .5rem;
+}
+
+.imgTable {
+    height: 3rem;
+}
